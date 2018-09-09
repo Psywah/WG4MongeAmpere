@@ -24,7 +24,8 @@ F = WG4MongeAmpere(x, elem, node,f,h) ;
 %% solve
 fun = @(x) WG4MongeAmpere(x, elem, node,f,h) ;
 x0 = rand(Ndof,1);
-options = optimoptions('fsolve','Display','none','PlotFcn',@optimplotfirstorderopt);
+options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
+    'Display','iter','MaxIter',1000,'MaxFunEvals',10000);
 
 x = fsolve(fun,x0,options)
 F = fun(x)
