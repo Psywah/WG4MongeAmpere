@@ -10,9 +10,9 @@ h=1;
 %% number of unknows
 [~,edge,bdDof] = dofP2(elem);
 Ndof = size(node,1)+size(edge,1)*5 +size(elem,1) - numel(bdDof)- 2*sum(double(bdDof>size(node,1)));
-showmesh(node,elem);
-findnode(node);
-findedge(node,edge);
+%showmesh(node,elem);
+%findnode(node);
+%findedge(node,edge);
 
 %% sourse function
 f = @(coord) sin(pi * coord(:,1)).* sin(pi*coord(:,2)); 
