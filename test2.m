@@ -5,11 +5,11 @@ h=1;
 
 %% generate mesh
 
-%[node,elem] = squaremesh([0,1,0,1],h); % 2 elems
+[node,elem] = squaremesh([0,1,0,1],h); % 2 elems
 
 % 4 elems
-node = [0,0;1,0;1,1;0,1;0.5,0.5];
-elem = [1,2,5;2,3,5;3,4,5;4,1,5];
+% node = [0,0;1,0;1,1;0,1;0.5,0.5];
+% elem = [1,2,5;2,3,5;3,4,5;4,1,5];
 
 [elem,~,~] = fixorder(node,elem);
 
