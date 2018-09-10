@@ -129,7 +129,7 @@ for ei=1:3
 end
 F = accumarray(ii,vv);
 % F(bdDof)=[];
-
+% 
 
 N = node(edge(bdEdgeIdx, 2), :) - node(edge(bdEdgeIdx, 1), :);
 N = [N(:,2), -N(:,1)];

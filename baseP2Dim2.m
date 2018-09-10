@@ -13,7 +13,7 @@ function [phi, Dphip] = baseP2Dim2(lambda,Dlambda,p)
         Dphip(:,:,1) = Dlambda(:,:,1)*(4*lambda(p,1)-1);
         Dphip(:,:,2) = Dlambda(:,:,2)*(4*lambda(p,2)-1);
         Dphip(:,:,3) = Dlambda(:,:,3)*(4*lambda(p,3)-1);
-        Dphip(:,:,4) = 4*(Dlambda(:,:,1)*lambda(p,2) + Dlambda(:,:,2)*lambda(p,1));
+        Dphip(:,:,4) = 4*(Dlambda(:,:,3)*lambda(p,2) + Dlambda(:,:,2)*lambda(p,3));
         Dphip(:,:,5) = 4*(Dlambda(:,:,1)*lambda(p,3) + Dlambda(:,:,3)*lambda(p,1));
         Dphip(:,:,6) = 4*(Dlambda(:,:,1)*lambda(p,2) + Dlambda(:,:,2)*lambda(p,1));
     end
