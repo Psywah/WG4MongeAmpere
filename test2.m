@@ -1,7 +1,7 @@
 
-clear
+%clear
 %% define mesh size
-h=1;
+h=1/16;
 
 %% generate mesh
 
@@ -15,23 +15,41 @@ h=1;
 
 %% number of unknows
 [~,edge,bdDof] = dofP2(elem);
-Ndof = size(node,1)+size(edge,1)*5 +size(elem,1) - numel(bdDof)- 2*sum(double(bdDof>size(node,1)));
-showmesh(node,elem);
-findnode(node);
-findedge(node,edge);
+NdofTotal = size(node,1)+size(edge,1)*5 +size(elem,1);
+Ndof = NdofTotal - numel(bdDof)- 2*sum(double(bdDof>size(node,1)));
+% showmesh(node,elem);
+% findnode(node);
+% findedge(node,edge);
 
 %% sourse function
-f = @(coord) sin(pi * coord(:,1)).* sin(pi*coord(:,2)); 
-x = rand(Ndof,1);
+%f = @(coord) sin(pi * coord(:,1)).* sin(pi*coord(:,2)); 
+f = @(coord) 4*(coord(:,1) -coord(:,1).^2).*(coord(:,2) -coord(:,2).^2)...
+                -(ones(size(coord,1),1) - 2*coord(:,1) ).^2 .* ...
+                  (ones(size(coord,1),1) - 2*coord(:,2) ).^2; % u  = (x-x^2)*(y-y^2)
+u = @(coord) (coord(:,1) - coord(:,1).^2).*(coord(:,2) - coord(:,2).^2);
+ux = @(coord) (ones(size(coord,1),1) - 2* coord(:,1)).*(coord(:,2) - coord(:,2).^2);
+uy = @(coord) (ones(size(coord,1),1) - 2* coord(:,2)).*(coord(:,1) - coord(:,1).^2);
 
-% nonlinear function 
-F = WG4MongeAmpere(x, elem, node,f,h) ;
 
-% %% solve
+
+
+%% nonlinear function 
+%x = rand(Ndof,1);
+%F = WG4MongeAmpere(x, elem, node,f,h) ;
+
+%%  solve
 fun = @(x) WG4MongeAmpere(x, elem, node,f,h) ;
-x0 = rand(Ndof,1);
-options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
-    'Display','iter','MaxIter',100,'MaxFunEvals',10000);
 
-[x, F] = fsolve(fun,x0,options)
+fullx =initialU(node,elem,u,ux,uy);
+x0 = BCtoX(fullx,node,elem,edge,bdDof);
+
+options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
+    'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
+
+[x, F] = fsolve(fun,x0,options);
+norm(F)
+%%
+x = recoverX(x,node,elem,edge,bdDof);
+error_u0 = getL2error(node,elem,u,x(1:size(node,1)+size(edge,1)));
+e_u0=[e_u0 error_u0]
 

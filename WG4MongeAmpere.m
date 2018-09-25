@@ -13,36 +13,11 @@ function F = WG4MongeAmpere(x, elem, node,f,h)
 
 
 %% generate dofs
-[elem2P2dof,edge,bdDof] = dofP2(elem);
 
-
-elem2edge = elem2P2dof(:,4:6) - size(node,1);
-edge2dof = uint32( reshape(1:size(edge,1)*4, 4, size(edge,1))')+ max(elem2P2dof(:));
-tmp = [2,3; 3,1; 1,2];
-for i = 1:3
-    elem2edgeDof(:,4*i-3:4*i) = edge2dof(elem2edge(:,i),:);
-    swapidx = elem(:,tmp(i,1)) > elem(:,tmp(i,2));
-    elem2edgeDof(swapidx, 4*i-3:4*i) = elem2edgeDof(swapidx, [4*i-2,4*i-3,4*i,4*i-1 ]);
-end
-elem2elemDof = uint32(1:size(elem,1))' + max(elem2edgeDof(:));
-
-Ndof = size(node,1)+size(edge,1)*5 +size(elem,1);
-idx = 1:Ndof;
-bdEdgeIdx = bdDof(bdDof>size(node,1)) -size(node,1);
-tmpIdx = [bdDof; bdEdgeIdx*4-3 +  size(node,1)+size(edge,1);...
-                bdEdgeIdx*4-3 +  size(node,1)+size(edge,1)+1;...
-                bdEdgeIdx*4-3 +  size(node,1)+size(edge,1)+2;...
-                bdEdgeIdx*4-3 +  size(node,1)+size(edge,1)+3];
-idx(tmpIdx) = [];
-tmpx=zeros(Ndof,1);
-tmpx(idx) = [x(1:end-numel(bdEdgeIdx)*2-size(elem,1));x(end-size(elem,1)+1:end)];
-N = node(edge(bdEdgeIdx, 2), :) - node(edge(bdEdgeIdx, 1), :);
-N = [N(:,2), -N(:,1)];
-tmpx(bdEdgeIdx*4-3 +  size(node,1)+size(edge,1)) = x(end-numel(bdEdgeIdx)*2-size(elem,1)+1:2:end-size(elem,1)) .*N(:,1);
-tmpx(bdEdgeIdx*4-3 +  size(node,1)+size(edge,1)+1) = x(end-numel(bdEdgeIdx)*2-size(elem,1)+2:2:end-size(elem,1)) .*N(:,1);
-tmpx(bdEdgeIdx*4-3 +  size(node,1)+size(edge,1)+2) = x(end-numel(bdEdgeIdx)*2-size(elem,1)+1:2:end-size(elem,1)) .*N(:,2);
-tmpx(bdEdgeIdx*4-3 +  size(node,1)+size(edge,1)+3) = x(end-numel(bdEdgeIdx)*2-size(elem,1)+2:2:end-size(elem,1)) .*N(:,2);
-x = tmpx;
+[elem2P2dof, elem2edgeDof, elem2elemDof, edge, bdDof] = dofmap(node, elem);
+x= recoverX(x,node,elem,edge,bdDof);
+%x = BCtoX(x,node,elem,edge,bdDof);
+%x= recoverX(x,node,elem,edge,bdDof);
 
 
 %% compute weak hessian for each basis
@@ -130,7 +105,7 @@ end
 F = accumarray(ii,vv);
 % F(bdDof)=[];
 % 
-
+ bdEdgeIdx = bdDof(bdDof>size(node,1)) -size(node,1);
 N = node(edge(bdEdgeIdx, 2), :) - node(edge(bdEdgeIdx, 1), :);
 N = [N(:,2), -N(:,1)];
 tmpIdx =bdEdgeIdx*4-3 +  size(node,1)+size(edge,1);
