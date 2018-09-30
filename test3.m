@@ -1,7 +1,7 @@
 
 clear
 %% define mesh size
- h=1; Nbisect = 3;
+ h=1; Nbisect = 1;
  h = h/2^(Nbisect/2);
 
 %% generate mesh
@@ -37,6 +37,12 @@ clear
 f = @(coord) 4*(coord(:,1) -coord(:,1).^2).*(coord(:,2) -coord(:,2).^2)...
                 -(ones(size(coord,1),1) - 2*coord(:,1) ).^2 .* ...
                   (ones(size(coord,1),1) - 2*coord(:,2) ).^2; 
+% u  = (x^2-x^3)*(y^2-y^3)
+% f = x^2*y^2*(45*x^2*y^2 - 60*x^2*y + 24*x^2 - 60*x*y^2 + 80*x*y - 32*x + 24*y^2 - 32*y + 12)
+f = @(p) p(:,1).^2 .* p(:,2).^2 .*(45*p(:,1).^2.*p(:,2).^2 -60*p(:,1).^2.*p(:,2)...
+           +24*p(:,1).^2 - 60*p(:,1).*p(:,2).^2 +80*p(:,1).*p(:,2) -32*p(:,1) ...
+           +24*p(:,2).^2 - 32*p(:,2) +12);
+       
  fun = @(x) WG4MongeAmpere(x, elemn, noden,f,h) ;
  
 %options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
