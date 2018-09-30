@@ -1,85 +1,64 @@
 
-%clear
+clear
 %% define mesh size
-h=1/4;
+ h=1; Nbisect = 3;
+ h = h/2^(Nbisect/2);
 
 %% generate mesh
-
-%[node,elem] = squaremesh([0,1,0,1],h); % 2 elems
-
 % 4 elems
- node = [0,0;1,0;1,1;0,1;0.5,0.5];
- elem = [1,2,5;2,3,5;3,4,5;4,1,5];
- 
- [elem,~,~] = fixorder(node,elem);
- elem = label(node,elem);
+ noden = [0,0;1,0;1,1;0,1;0.5,0.5];
+ elemn = [1,2,5;2,3,5;3,4,5;4,1,5];
+ [elemn,~,~] = fixorder(noden,elemn);
+ elemn = label(noden,elemn);
+ for i = 1:Nbisect
+    node = noden;elem=elemn;
+    [noden,elemn,~,HB,tree] = bisect(node,elem,'all');
+ end
+%  subplot(1,2,1); showmesh(node,elem);
+%  findnode(node); findelem(node,elem); findedge(node,edge);
+%  subplot(1,2,2); showmesh(noden,elemn);
+%  findnode(noden); findelem(noden,elemn); findedge(noden,edgen); 
  
  %% number of unknows
  [~,edge,bdDof] = dofP2(elem);
- subplot(1,2,1);
- showmesh(node,elem);
- findnode(node);
- findelem(node,elem);
- findedge(node,edge);
- 
- 
- NdofTotal = size(node,1)+size(edge,1)*5 +size(elem,1);
- Ndof = NdofTotal - numel(bdDof)- 2*sum(double(bdDof>size(node,1)));
- 
- 
- [noden,elemn,~,HB,tree] = bisect(node,elem,'all');
+ tmp = load(['sol_', int2str(2*2^Nbisect), '_ele_h1.mat']);
+ NinitSol= size(tmp.x,2);
+ for i = 1:NinitSol
+    xc(:,i)= recoverX(tmp.x(:,i),node,elem,edge,bdDof);
+ end
+ xf  = WGinterpolate(xc,HB,tree,node,elem,noden,elemn);
   [~,edgen,bdDofn] = dofP2(elemn);
- subplot(1,2,2);
- showmesh(noden,elemn);
- findnode(noden);
- findelem(noden,elemn);
- findedge(noden,edgen);
+ for i = 1:NinitSol
+    x0(:,i) = BCtoX(xf(:,i),noden,elemn,edgen,bdDofn);
+ end
  
- NdofTotaln = size(noden,1)+size(edgen,1)*5 +size(elemn,1);
- Ndofn = NdofTotaln - numel(bdDofn)- 2*sum(double(bdDofn>size(noden,1)));
- 
-
-
 %% sourse function
-%f = @(coord) sin(pi * coord(:,1)).* sin(pi*coord(:,2)); 
+% u  = (x-x^2)*(y-y^2)
 f = @(coord) 4*(coord(:,1) -coord(:,1).^2).*(coord(:,2) -coord(:,2).^2)...
                 -(ones(size(coord,1),1) - 2*coord(:,1) ).^2 .* ...
                   (ones(size(coord,1),1) - 2*coord(:,2) ).^2; 
-% u  = (x-x^2)*(y-y^2)
-u = @(coord) (coord(:,1) - coord(:,1).^2).*(coord(:,2) - coord(:,2).^2);
-ux = @(coord) (ones(size(coord,1),1) - 2* coord(:,1)).*(coord(:,2) - coord(:,2).^2);
-uy = @(coord) (ones(size(coord,1),1) - 2* coord(:,2)).*(coord(:,1) - coord(:,1).^2);
-
-
-oldx =initialU(node,elem,u,ux,uy);
-
-newx  = WGinterpolate(oldx,HB,tree,node,elem,noden,elemn);
-
-
-
-
-%% nonlinear function 
-x = rand(Ndof,1);
-F = WG4MongeAmpere(x, elem, node,f,h) ;
-
-%%  solve
-fun = @(x) WG4MongeAmpere(x, elem, node,f,h) ;
-
-fullx =initialU(node,elem,u,ux,uy);
-x0 = BCtoX(fullx,node,elem,edge,bdDof);
-
+ fun = @(x) WG4MongeAmpere(x, elemn, noden,f,h) ;
+ 
+%options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
+%    'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
 options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
-    'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
-
+    'Display','final-detailed','MaxIter',100,'MaxFunEvals',1000000);
 %options = optimoptions('fsolve','Algorithm','trust-region-reflective',...
 %    'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
 %options = optimoptions('fsolve','Algorithm','trust-region-dogleg',...
 %    'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
 
-[x, F] = fsolve(fun,x0,options);
-norm(F)
+for i = 1:NinitSol
+    [allx(:,i), F] = fsolve(fun,x0(:,i),options);
+    fprintf('solution %d, resid %e\n',i,norm(F));
+end
+tol = 1e-6;
+ x = delRept(allx, tol);
+ save(['sol_' int2str(4*2^Nbisect) '_ele_h1.mat'],'allx','x');
+ 
+
 %%
-x = recoverX(x,node,elem,edge,bdDof);
-error_u0 = getL2error(node,elem,u,x(1:size(node,1)+size(edge,1)));
+%x = recoverX(x,node,elem,edge,bdDof);
+%error_u0 = getL2error(node,elem,u,x(1:size(node,1)+size(edge,1)));
 %e_u0=[e_u0 error_u0]
 
