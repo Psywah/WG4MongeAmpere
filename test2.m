@@ -1,7 +1,7 @@
 
 %clear
 %% define mesh size
-h=1;
+h=1/4;
 
 %% generate mesh
 
@@ -25,7 +25,8 @@ Ndof = NdofTotal - numel(bdDof)- 2*sum(double(bdDof>size(node,1)));
 %f = @(coord) sin(pi * coord(:,1)).* sin(pi*coord(:,2)); 
 f = @(coord) 4*(coord(:,1) -coord(:,1).^2).*(coord(:,2) -coord(:,2).^2)...
                 -(ones(size(coord,1),1) - 2*coord(:,1) ).^2 .* ...
-                  (ones(size(coord,1),1) - 2*coord(:,2) ).^2; % u  = (x-x^2)*(y-y^2)
+                  (ones(size(coord,1),1) - 2*coord(:,2) ).^2; 
+% u  = (x-x^2)*(y-y^2)
 u = @(coord) (coord(:,1) - coord(:,1).^2).*(coord(:,2) - coord(:,2).^2);
 ux = @(coord) (ones(size(coord,1),1) - 2* coord(:,1)).*(coord(:,2) - coord(:,2).^2);
 uy = @(coord) (ones(size(coord,1),1) - 2* coord(:,2)).*(coord(:,1) - coord(:,1).^2);
