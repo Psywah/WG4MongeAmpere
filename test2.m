@@ -1,7 +1,7 @@
 
 %clear
 %% define mesh size
-h=1/4;
+h=1;
 
 %% generate mesh
 
@@ -22,10 +22,13 @@ Ndof = NdofTotal - numel(bdDof)- 2*sum(double(bdDof>size(node,1)));
  findedge(node,edge);
 
 %% sourse function
-%f = @(coord) sin(pi * coord(:,1)).* sin(pi*coord(:,2)); 
+%f = @(coord) sin(pi * coord(:,1)).* sin(pi*coord(:,2));
 f = @(coord) 4*(coord(:,1) -coord(:,1).^2).*(coord(:,2) -coord(:,2).^2)...
-                -(ones(size(coord,1),1) - 2*coord(:,1) ).^2 .* ...
-                  (ones(size(coord,1),1) - 2*coord(:,2) ).^2; 
+    -(ones(size(coord,1),1) - 2*coord(:,1) ).^2 .* ...
+    (ones(size(coord,1),1) - 2*coord(:,2) ).^2;
+f = @(p) p(:,1).^2 .* p(:,2).^2 .*(45*p(:,1).^2.*p(:,2).^2 -60*p(:,1).^2.*p(:,2)...
+    +24*p(:,1).^2 - 60*p(:,1).*p(:,2).^2 +80*p(:,1).*p(:,2) -32*p(:,1) ...
+    +24*p(:,2).^2 - 32*p(:,2) +12);
 % u  = (x-x^2)*(y-y^2)
 u = @(coord) (coord(:,1) - coord(:,1).^2).*(coord(:,2) - coord(:,2).^2);
 ux = @(coord) (ones(size(coord,1),1) - 2* coord(:,1)).*(coord(:,2) - coord(:,2).^2);

@@ -21,7 +21,8 @@ clear
  
  %% number of unknows
  [~,edge,bdDof] = dofP2(elem);
- tmp = load(['sol_', int2str(2*2^Nbisect), '_ele_h1.mat']);
+ %tmp = load(['sol_', int2str(2*2^Nbisect), '_ele_h1.mat']);
+  tmp = load(['sol_', int2str(2*2^Nbisect), '_ele_NS.mat']);
  NinitSol= size(tmp.x,2);
  for i = 1:NinitSol
     xc(:,i)= recoverX(tmp.x(:,i),node,elem,edge,bdDof);
@@ -60,7 +61,7 @@ for i = 1:NinitSol
 end
 tol = 1e-6;
  x = delRept(allx, tol);
- save(['sol_' int2str(4*2^Nbisect) '_ele_h1.mat'],'allx','x');
+ save(['sol_' int2str(4*2^Nbisect) '_ele_NS.mat'],'allx','x');
  
 
 %%
