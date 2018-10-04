@@ -1,15 +1,15 @@
 
 %clear
 %% define mesh size
-h=1;
+h=1/(2^3);
 
 %% generate mesh
 
-%[node,elem] = squaremesh([0,1,0,1],h); % 2 elems
+[node,elem] = squaremesh([0,1,0,1],h); % 2 elems
 
-% 4 elems
- node = [0,0;1,0;1,1;0,1;0.5,0.5];
- elem = [1,2,5;2,3,5;3,4,5;4,1,5];
+% % 4 elems
+%  node = [0,0;1,0;1,1;0,1;0.5,0.5];
+%  elem = [1,2,5;2,3,5;3,4,5;4,1,5];
 
 [elem,~,~] = fixorder(node,elem);
 
@@ -17,6 +17,7 @@ h=1;
 [~,edge,bdDof] = dofP2(elem);
 NdofTotal = size(node,1)+size(edge,1)*5 +size(elem,1);
 Ndof = NdofTotal - numel(bdDof)- 2*sum(double(bdDof>size(node,1)));
+NdofU0 = size(node,1)+size(edge,1) - numel(bdDof);
  showmesh(node,elem);
  findnode(node);
  findedge(node,edge);
@@ -26,9 +27,9 @@ Ndof = NdofTotal - numel(bdDof)- 2*sum(double(bdDof>size(node,1)));
 f = @(coord) 4*(coord(:,1) -coord(:,1).^2).*(coord(:,2) -coord(:,2).^2)...
     -(ones(size(coord,1),1) - 2*coord(:,1) ).^2 .* ...
     (ones(size(coord,1),1) - 2*coord(:,2) ).^2;
-f = @(p) p(:,1).^2 .* p(:,2).^2 .*(45*p(:,1).^2.*p(:,2).^2 -60*p(:,1).^2.*p(:,2)...
-    +24*p(:,1).^2 - 60*p(:,1).*p(:,2).^2 +80*p(:,1).*p(:,2) -32*p(:,1) ...
-    +24*p(:,2).^2 - 32*p(:,2) +12);
+% f = @(p) p(:,1).^2 .* p(:,2).^2 .*(45*p(:,1).^2.*p(:,2).^2 -60*p(:,1).^2.*p(:,2)...
+%     +24*p(:,1).^2 - 60*p(:,1).*p(:,2).^2 +80*p(:,1).*p(:,2) -32*p(:,1) ...
+%     +24*p(:,2).^2 - 32*p(:,2) +12);
 % u  = (x-x^2)*(y-y^2)
 u = @(coord) (coord(:,1) - coord(:,1).^2).*(coord(:,2) - coord(:,2).^2);
 ux = @(coord) (ones(size(coord,1),1) - 2* coord(:,1)).*(coord(:,2) - coord(:,2).^2);
@@ -60,5 +61,7 @@ norm(F)
 %%
 x = recoverX(x,node,elem,edge,bdDof);
 error_u0 = getL2error(node,elem,u,x(1:size(node,1)+size(edge,1)));
-%e_u0=[e_u0 error_u0]
+error_ug = getL2errorEdge(node,elem,ux,uy,x(size(node,1)+size(edge,1)+1:end-size(elem,1 )));
+e_ug = [e_ug error_ug]
+e_u0=[e_u0 error_u0]
 

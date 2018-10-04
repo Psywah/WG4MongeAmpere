@@ -1,7 +1,7 @@
 
 clear
 %% define mesh size
- h=1; Nbisect = 1;
+ h=1; Nbisect = 4;
  h = h/2^(Nbisect/2);
 
 %% generate mesh
@@ -21,6 +21,8 @@ clear
  
  %% number of unknows
  [~,edge,bdDof] = dofP2(elem);
+   [~,edgen,bdDofn] = dofP2(elemn);
+ NdofU0 = size(noden,1)+size(edgen,1) - numel(bdDofn)
  %tmp = load(['sol_', int2str(2*2^Nbisect), '_ele_h1.mat']);
   tmp = load(['sol_', int2str(2*2^Nbisect), '_ele_NS.mat']);
  NinitSol= size(tmp.x,2);
@@ -28,10 +30,11 @@ clear
     xc(:,i)= recoverX(tmp.x(:,i),node,elem,edge,bdDof);
  end
  xf  = WGinterpolate(xc,HB,tree,node,elem,noden,elemn);
-  [~,edgen,bdDofn] = dofP2(elemn);
+
  for i = 1:NinitSol
     x0(:,i) = BCtoX(xf(:,i),noden,elemn,edgen,bdDofn);
  end
+ 
  
 %% sourse function
 % u  = (x-x^2)*(y-y^2)

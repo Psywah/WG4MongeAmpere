@@ -23,19 +23,23 @@ disp('plot solutions');
  %% number of unknows
  [~,edgen,bdDofn] = dofP2(elemn);
  tmp = load(['sol_', int2str(4*2^Nbisect), '_ele_h1.mat']);
- for i = 1:size(tmp.allx,2)
-    allx(:,i)= recoverX(tmp.allx(:,i),noden,elemn,edgen,bdDofn);
- end
-  N = size(noden,1);
- tx = delRept(allx(1:N,:), 1e-3);
+%  for i = 1:size(tmp.allx,2)
+%     allx(:,i)= recoverX(tmp.allx(:,i),noden,elemn,edgen,bdDofn);
+%  end
+%   N = size(noden,1);
+%  tx = delRept(allx(1:N,:), 1e-3);
+
+for i =1:size(tmp.x,2)
+    tx(:,i)=recoverX(tmp.x(:,i),noden,elemn,edgen,bdDofn);
+end
   NSol= size(tx,2);
  Nplot = ceil(sqrt(NSol));
  for i = 1 :NSol
      subplot(Nplot,Nplot, i);
-     showsolution(noden,elemn,tx(:,i));
+     showsolution(noden,elemn,tx(1:size(noden,1),i));
      title(int2str(i));
  end
- subplot(Nplot,Nplot, NSol+1);
- title([int2str(4*2^Nbisect) 'elems',  int2str(NSol) 'sols'])
+ %subplot(Nplot,Nplot, NSol+1);
+ %title([int2str(4*2^Nbisect) 'elems',  int2str(NSol) 'sols'])
  
 
