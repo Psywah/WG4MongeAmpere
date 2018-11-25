@@ -3,7 +3,7 @@ function err = getL2errorEdge(node,elem,ux,uy,x)
 
 [~,edge,~] = dofP2(elem);
 NE= size(edge,1);
-[lambda,weight] = quadpts1(5);
+[lambda,weight] = quadpts1(2);
 
 nQuad = size(lambda,1);
 err = zeros(NE,1);
@@ -17,5 +17,5 @@ for p = 1:nQuad
     err = err + weight(p) * sum((uh - uexact).^2,2);
 end
 length = sqrt(sum((node(edge(:,1),:) - node(edge(:,2),:)).^2,2) );
-err = sum(length.*err);
+err = sqrt(sum(length.*err));
 

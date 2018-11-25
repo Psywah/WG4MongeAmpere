@@ -1,7 +1,7 @@
 
 %clear
 %% define mesh size
-h=1/(2^3);
+h=1/(2^4);
 
 %% generate mesh
 
@@ -63,5 +63,11 @@ x = recoverX(x,node,elem,edge,bdDof);
 error_u0 = getL2error(node,elem,u,x(1:size(node,1)+size(edge,1)));
 error_ug = getL2errorEdge(node,elem,ux,uy,x(size(node,1)+size(edge,1)+1:end-size(elem,1 )));
 e_ug = [e_ug error_ug]
+if size(e_ug,2)>1
+order = log(e_ug(1:end-1)./e_ug(2:end)) /log(2)
+end
 e_u0=[e_u0 error_u0]
+if size(e_ug,2)>1
+order = log(e_u0(1:end-1)./e_u0(2:end)) /log(2)
+end
 
