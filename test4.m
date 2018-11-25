@@ -52,6 +52,7 @@ options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
 %options = optimoptions('fsolve','Algorithm','trust-region-dogleg',...
 %    'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
 
+allx=[];
 for i = 1:NinitSol
     [x, F] = fsolve(fun,x0(:,i),options);
     fprintf('solution %d, resid %e\n',i,norm(F));
