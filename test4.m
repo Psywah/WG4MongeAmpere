@@ -1,7 +1,7 @@
 
 clear
 %% define mesh size
- h=1; Nbisect = 4;
+ h=1; Nbisect = 1;
  h = h/2^(Nbisect/2);
 
 %% generate mesh
@@ -53,8 +53,11 @@ options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
 %    'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
 
 for i = 1:NinitSol
-    [allx(:,i), F] = fsolve(fun,x0(:,i),options);
+    [x, F] = fsolve(fun,x0(:,i),options);
     fprintf('solution %d, resid %e\n',i,norm(F));
+    if norm(F)<1e-6
+        allx=[allx,x];
+    end
 end
 tol = 1e-6;
  x = delRept(allx, tol);

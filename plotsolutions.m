@@ -2,7 +2,7 @@
 clear;
 disp('plot solutions');
 %% define mesh size
- h=1; Nbisect = 1;
+ h=1; Nbisect = 4;
  h = h/2^(Nbisect/2);
 
 %% generate mesh
@@ -29,9 +29,9 @@ disp('plot solutions');
   N = size(noden,1);
  tx = delRept(allx(1:N,:), 1e-3);
 
-for i =1:size(tmp.x,2)
-    tx(:,i)=recoverX(tmp.x(:,i),noden,elemn,edgen,bdDofn);
-end
+% for i =1:size(tmp.x,2)
+%     tx(:,i)=recoverX(tmp.x(:,i),noden,elemn,edgen,bdDofn);
+% end
   NSol= size(tx,2);
  Nplot = ceil(sqrt(NSol));
  for i = 1 :NSol
