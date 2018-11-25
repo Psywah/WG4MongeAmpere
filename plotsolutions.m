@@ -2,7 +2,7 @@
 clear;
 disp('plot solutions');
 %% define mesh size
- h=1; Nbisect = 4;
+ h=1; Nbisect = 1;
  h = h/2^(Nbisect/2);
 
 %% generate mesh
@@ -22,12 +22,12 @@ disp('plot solutions');
 
  %% number of unknows
  [~,edgen,bdDofn] = dofP2(elemn);
- tmp = load(['sol_', int2str(4*2^Nbisect), '_ele_h1.mat']);
-%  for i = 1:size(tmp.allx,2)
-%     allx(:,i)= recoverX(tmp.allx(:,i),noden,elemn,edgen,bdDofn);
-%  end
-%   N = size(noden,1);
-%  tx = delRept(allx(1:N,:), 1e-3);
+ tmp = load(['sol_f4_elem', int2str(4*2^Nbisect), '.mat']);
+ for i = 1:size(tmp.allx,2)
+    allx(:,i)= recoverX(tmp.allx(:,i),noden,elemn,edgen,bdDofn);
+ end
+  N = size(noden,1);
+ tx = delRept(allx(1:N,:), 1e-3);
 
 for i =1:size(tmp.x,2)
     tx(:,i)=recoverX(tmp.x(:,i),noden,elemn,edgen,bdDofn);
