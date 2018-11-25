@@ -14,10 +14,10 @@ clear
     node = noden;elem=elemn;
     [noden,elemn,~,HB,tree] = bisect(node,elem,'all');
  end
- subplot(1,2,1); showmesh(node,elem);
- findnode(node); findelem(node,elem);% findedge(node,edge);
- subplot(1,2,2); showmesh(noden,elemn);
- findnode(noden); findelem(noden,elemn);% findedge(noden,edgen); 
+%  subplot(1,2,1); showmesh(node,elem);
+%  findnode(node); findelem(node,elem);% findedge(node,edge);
+%  subplot(1,2,2); showmesh(noden,elemn);
+%  findnode(noden); findelem(noden,elemn);% findedge(noden,edgen); 
  
  %% number of unknows
  [~,edge,bdDof] = dofP2(elem);
