@@ -16,8 +16,9 @@ x=zeros(Ndofx,1);
 x(1:end -numel(bdEdgeIdx)*2-size(elem,1) ) =fullx(idx(1:end - size(elem,1)));
 x(end - size(elem,1) +1 : end ) = fullx(end - size(elem,1) +1 : end);
 
-N = node(edge(bdEdgeIdx, 2), :) - node(edge(bdEdgeIdx, 1), :);
-N = [N(:,2), -N(:,1)];
+T = node(edge(bdEdgeIdx, 2), :) - node(edge(bdEdgeIdx, 1), :);
+T = diag(1./sqrt(sum(T.^2,2)))*T;
+N = [T(:,2), -T(:,1)];
 length = sum(N.^2,2);
 x(end-numel(bdEdgeIdx)*2-size(elem,1)+1:2:end-size(elem,1)) =...
         (fullx(bdEdgeIdx*4-3 +  size(node,1)+size(edge,1)) .*N(:,1)+...

@@ -1,8 +1,13 @@
 
 clear
 %% define mesh size
- h=1; Nbisect = 5;
+ h=1; Nbisect = 1;
  h = h/2^(Nbisect/2);
+ f = @(coord) 4*ones(size(coord(:,1)));
+ug = @(coord) 4*zeros(size(coord(:,1)));
+ux = @(coord) 4*zeros(size(coord(:,1)));
+uy = @(coord) 4*zeros(size(coord(:,1)));
+
 
 %% generate mesh
 % 4 elems
@@ -27,7 +32,7 @@ clear
   tmp = load(['sol_f4_elem', int2str(2*2^Nbisect), '.mat']);
  NinitSol= size(tmp.x,2)
  for i = 1:NinitSol
-    xc(:,i)= recoverX(tmp.x(:,i),node,elem,edge,bdDof);
+    xc(:,i)= recoverX(tmp.x(:,i),node,elem,edge,bdDof,ug,ux,uy);
  end
  xf  = WGinterpolate(xc,HB,tree,node,elem,noden,elemn);
 
@@ -38,10 +43,10 @@ clear
  
 %% sourse function
 
-f = @(coord) 4*ones(size(coord(:,1)));
+
 
        
- fun = @(x) WG4MongeAmpere(x, elemn, noden,f,h) ;
+ fun = @(x) WG4MongeAmpere(x, elemn, noden,h,f,ug,ux,uy) ;
  
 %options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
 %    'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
