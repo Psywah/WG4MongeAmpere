@@ -25,7 +25,7 @@ clear
  NdofU0 = size(noden,1)+size(edgen,1) - numel(bdDofn)
  %tmp = load(['sol_', int2str(2*2^Nbisect), '_ele_h1.mat']);
   tmp = load(['sol_f4_elem', int2str(2*2^Nbisect), '.mat']);
- NinitSol= size(tmp.x,2);
+ NinitSol= size(tmp.x,2)
  for i = 1:NinitSol
     xc(:,i)= recoverX(tmp.x(:,i),node,elem,edge,bdDof);
  end
