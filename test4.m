@@ -1,7 +1,7 @@
 
 clear
 %% define mesh size
- h=1; Nbisect = 4;
+ h=1; Nbisect = 5;
  h = h/2^(Nbisect/2);
 
 %% generate mesh
