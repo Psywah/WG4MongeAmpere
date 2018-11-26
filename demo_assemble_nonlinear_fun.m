@@ -3,9 +3,7 @@
 %% define mesh size
  h=1; 
 
-%% sourse function
-%f = @(coord) sin(pi * coord(:,1)).* sin(pi*coord(:,2));
-
+%% solutions
 % % u  = (x-x^2)*(y-y^2)
 % f = @(coord) 4*(coord(:,1) -coord(:,1).^2).*(coord(:,2) -coord(:,2).^2)...
 %     -(ones(size(coord,1),1) - 2*coord(:,1) ).^2 .* ...
@@ -20,13 +18,9 @@ u = @(coord) coord(:,1).^2 +coord(:,2).^2  -1;
 ux = @(coord) 2*coord(:,1);
 uy = @(coord) 2*coord(:,2);
 
-
-
 %% generate mesh
-
 node = [0,0;1,0;1,1;0,1;0.5,0.5];  % 4 elems
 elem = [1,2,5;2,3,5;3,4,5;4,1,5];
-
 [elem,~,~] = fixorder(node,elem);
 
 %% number of unknows
