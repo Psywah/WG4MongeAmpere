@@ -3,10 +3,16 @@ clear
 %% define mesh size
  h=1; Nbisect = 1;
  h = h/2^(Nbisect/2);
+%  f = @(coord) 4*ones(size(coord(:,1)));
+% ug = @(coord) 4*zeros(size(coord(:,1)));
+% ux = @(coord) 4*zeros(size(coord(:,1)));
+% uy = @(coord) 4*zeros(size(coord(:,1)));
+
+% u = x^2+ y^2 -1
  f = @(coord) 4*ones(size(coord(:,1)));
-ug = @(coord) 4*zeros(size(coord(:,1)));
-ux = @(coord) 4*zeros(size(coord(:,1)));
-uy = @(coord) 4*zeros(size(coord(:,1)));
+ug = @(coord) coord(:,1).^2 +coord(:,2).^2  -1;
+ux = @(coord) 2*coord(:,1);
+uy = @(coord) 2*coord(:,2);
 
 
 %% generate mesh
@@ -29,7 +35,7 @@ uy = @(coord) 4*zeros(size(coord(:,1)));
    [~,edgen,bdDofn] = dofP2(elemn);
  NdofU0 = size(noden,1)+size(edgen,1) - numel(bdDofn)
  %tmp = load(['sol_', int2str(2*2^Nbisect), '_ele_h1.mat']);
-  tmp = load(['./data/sol_f4_elem', int2str(2*2^Nbisect), '.mat']);
+  tmp = load(['./data/ele', int2str(2*2^Nbisect), '_DBC.mat']);
  NinitSol= size(tmp.x,2)
  for i = 1:NinitSol
     xc(:,i)= recoverX(tmp.x(:,i),node,elem,edge,bdDof,ug,ux,uy);
@@ -67,7 +73,7 @@ for i = 1:NinitSol
 end
 tol = 1e-6;
  x = delRept(allx, tol);
- save(['sol_f4_elem', int2str(4*2^Nbisect), '.mat'],'allx','x');
+ save(['./data/ele', int2str(4*2^Nbisect), '_DBC.mat'],'allx','x');
  
 
 %%
