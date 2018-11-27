@@ -1,7 +1,7 @@
 
 clear
 %% define mesh size
- h=1; Nbisect = 3;
+ h=1; Nbisect = 4;
  h = h/2^(Nbisect/2);
 %  f = @(coord) 4*ones(size(coord(:,1)));
 % ug = @(coord) 4*zeros(size(coord(:,1)));
