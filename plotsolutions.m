@@ -2,12 +2,16 @@
 clear;
 disp('plot solutions');
 %% define mesh size
- h=1; Nbisect = 5;
- h = h/2^(Nbisect/2);
-  f = @(coord) 4*ones(size(coord(:,1)));
-u = @(coord) 4*zeros(size(coord(:,1)));
-ux = @(coord) 4*zeros(size(coord(:,1)));
-uy = @(coord) 4*zeros(size(coord(:,1)));
+ h=1; Nbisect = 4;
+  h = h/2^(Nbisect/2);
+%   f = @(coord) 4*ones(size(coord(:,1)));
+% u = @(coord) 4*zeros(size(coord(:,1)));
+% ux = @(coord) 4*zeros(size(coord(:,1)));
+% uy = @(coord) 4*zeros(size(coord(:,1)));
+ f = @(coord) 4*ones(size(coord(:,1)));
+u = @(coord) coord(:,1).^2 +coord(:,2).^2  -1;
+ux = @(coord) 2*coord(:,1);
+uy = @(coord) 2*coord(:,2);
 
 %% generate mesh
 % 4 elems
@@ -26,16 +30,31 @@ uy = @(coord) 4*zeros(size(coord(:,1)));
 
  %% number of unknows
  [~,edgen,bdDofn] = dofP2(elemn);
- tmp = load(['sol_f4_elem', int2str(4*2^Nbisect), '.mat']);
- for i = 1:size(tmp.allx,2)
-    allx(:,i)= recoverX(tmp.allx(:,i),noden,elemn,edgen,bdDofn,u,ux,uy);
- end
-  N = size(noden,1);
- tx = delRept(allx(1:N,:), 1e-3);
+ tmp = load(['./data/ele', int2str(4*2^Nbisect), '_DBC.mat']);
+
+%  
+%  for i = 1:size(tmp.allx,2)
+%     allx(:,i)= recoverX(tmp.allx(:,i),node,elem,edge,bdDof,u,ux,uy);
+%  end
+%   N = size(node,1);
+%  tx = delRept(allx(1:N,:), 1e-3);
+%  
+ 
+%  
+%  for i = 1:size(tmp.allx,2)
+%     allx(:,i)= recoverX(tmp.allx(:,i),noden,elemn,edgen,bdDofn,u,ux,uy);
+%  end
+%   N = size(noden,1);
+%  tx = delRept(allx(1:N,:), 1e-3);
 
 % for i =1:size(tmp.x,2)
-%     tx(:,i)=recoverX(tmp.x(:,i),noden,elemn,edgen,bdDofn);
+%     tx(:,i)=recoverX(tmp.x(:,i),node,elem,edge,bdDof,u,ux,uy);
 % end
+% 
+for i =1:size(tmp.x,2)
+    tx(:,i)=recoverX(tmp.x(:,i),noden,elemn,edgen,bdDofn,u,ux,uy);
+end
+
   NSol= size(tx,2);
  Nplot = ceil(sqrt(NSol));
  for i = 1 :NSol

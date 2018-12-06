@@ -18,6 +18,13 @@ u = @(coord) coord(:,1).^2 +coord(:,2).^2  -1;
 ux = @(coord) 2*coord(:,1);
 uy = @(coord) 2*coord(:,2);
 
+% u = x^4+y^4
+ f = @(coord) 144*coord(:,1).^2.*coord(:,2).^2;
+u = @(coord) coord(:,1).^4 +coord(:,2).^4 ;
+ux = @(coord) 4*coord(:,1).^3;
+uy = @(coord) 4*coord(:,2).^3;
+
+
 %% generate mesh
 node = [0,0;1,0;1,1;0,1;0.5,0.5];  % 4 elems
 elem = [1,2,5;2,3,5;3,4,5;4,1,5];

@@ -1,7 +1,7 @@
 
 %clear
 %% define mesh size
-N=8;
+N=2;
 h=1/N; 
 
 %% sourse function
@@ -20,6 +20,12 @@ h=1/N;
 u = @(coord) coord(:,1).^2 +coord(:,2).^2  -1;
 ux = @(coord) 2*coord(:,1);
 uy = @(coord) 2*coord(:,2);
+
+% u = x^4+y^4
+ f = @(coord) 144*coord(:,1).^2.*coord(:,2).^2;
+u = @(coord) coord(:,1).^4 +coord(:,2).^4 ;
+ux = @(coord) 4*coord(:,1).^3;
+uy = @(coord) 4*coord(:,2).^3;
 
 
 
