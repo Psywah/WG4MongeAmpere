@@ -1,7 +1,7 @@
 function x = delRept(x, tol)
 
 i = 1;
-while i~= size(x,2)
+while i< size(x,2)
     j = i+1;
     while j <= size(x,2)
         if norm(x(:,i)-x(:,j)) <tol ||...

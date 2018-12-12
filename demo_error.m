@@ -1,7 +1,7 @@
 
 %clear
 %% define mesh size
-N=10;
+N=8;
 h=1/N; 
 
 %% sourse function
@@ -21,29 +21,29 @@ u = @(coord) coord(:,1).^2 +coord(:,2).^2  -1;
 ux = @(coord) 2*coord(:,1);
 uy = @(coord) 2*coord(:,2);
 
-% u = 1/2*x^2+x y^2/4 
- f = @(coord) .5*ones(size(coord(:,1)));
-u = @(coord) coord(:,1).^2/2 +coord(:,1) + coord(:,2).^2/4;
-ux = @(coord) coord(:,1)+ones(size(coord(:,1)));
-uy = @(coord) coord(:,2)/2;
+% % u = 1/2*x^2+x y^2/4 
+%  f = @(coord) .5*ones(size(coord(:,1)));
+% u = @(coord) coord(:,1).^2/2 +coord(:,1) + coord(:,2).^2/4;
+% ux = @(coord) coord(:,1)+ones(size(coord(:,1)));
+% uy = @(coord) coord(:,2)/2;
 
-
+% 
 % u = x^4+y^4
  f = @(coord) 144*coord(:,1).^2.*coord(:,2).^2;
 u = @(coord) coord(:,1).^4 +coord(:,2).^4 ;
 ux = @(coord) 4*coord(:,1).^3;
 uy = @(coord) 4*coord(:,2).^3;
-
-% maping square to square
-q = @(x) (-x.^2/(8*pi) + 1/(256*pi^3) +1/(32*pi)).*cos(8*pi*x) + x.*sin(8*pi*x)/(32*pi^2);
-dq = @(x) (x.^2-.25).*sin(8*pi*x);
-ddq = @(x) 2*x.*sin(8*pi*x) + 8*pi*(x.^2-.25).*cos(8*pi*x);
-f = @(coord) ones(size(coord(:,1))) +4*(ddq(coord(:,1)).*q(coord(:,2)) +ddq(coord(:,2)).*q(coord(:,1)) )...
-                    +16*(ddq(coord(:,1)).*q(coord(:,2)).*ddq(coord(:,2)).*q(coord(:,1)) -...
-                          dq(coord(:,1)).^2.*dq(coord(:,2)).^2 );
-u = @(coord) sum(coord.^2,2)/2 + 4*q(coord(:,1)).*q(coord(:,2));
-ux = @(coord) coord(:,1) + 4*dq(coord(:,1)).*q(coord(:,2));
-uy = @(coord) coord(:,2) + 4*dq(coord(:,2)).*q(coord(:,1));
+% 
+% % maping square to square
+% q = @(x) (-x.^2/(8*pi) + 1/(256*pi^3) +1/(32*pi)).*cos(8*pi*x) + x.*sin(8*pi*x)/(32*pi^2);
+% dq = @(x) (x.^2-.25).*sin(8*pi*x);
+% ddq = @(x) 2*x.*sin(8*pi*x) + 8*pi*(x.^2-.25).*cos(8*pi*x);
+% f = @(coord) ones(size(coord(:,1))) +4*(ddq(coord(:,1)).*q(coord(:,2)) +ddq(coord(:,2)).*q(coord(:,1)) )...
+%                     +16*(ddq(coord(:,1)).*q(coord(:,2)).*ddq(coord(:,2)).*q(coord(:,1)) -...
+%                           dq(coord(:,1)).^2.*dq(coord(:,2)).^2 );
+% u = @(coord) sum(coord.^2,2)/2 + 4*q(coord(:,1)).*q(coord(:,2));
+% ux = @(coord) coord(:,1) + 4*dq(coord(:,1)).*q(coord(:,2));
+% uy = @(coord) coord(:,2) + 4*dq(coord(:,2)).*q(coord(:,1));
 
 
 
@@ -76,13 +76,13 @@ fun = @(x) WG4MongeAmpere(x, elem, node,h,f,u,ux,uy) ;
 fullx =initialU(node,elem,u,ux,uy);
 x0 = BCtoX(fullx,node,elem,edge,bdDof);
 
-options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
-    'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
+% options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
+%     'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
 
 %options = optimoptions('fsolve','Algorithm','trust-region-reflective',...
 %    'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
-%options = optimoptions('fsolve','Algorithm','trust-region-dogleg',...
-%    'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
+options = optimoptions('fsolve','Algorithm','trust-region-dogleg',...
+    'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
 
 [x, F] = fsolve(fun,x0,options);
 norm(F)
