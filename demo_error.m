@@ -98,4 +98,3 @@ error_ug = getL2errorEdge(node,elem,ux,uy,x(size(node,1)+size(edge,1)+1:end-size
 % if size(e_ug,2)>1
 % order = log(e_u0(1:end-1)./e_u0(2:end)) /log(2)
 % end
-
