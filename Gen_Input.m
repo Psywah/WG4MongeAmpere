@@ -55,27 +55,27 @@ end
 
 fclose(fid);
 
-unix('./bertini1 input')
-
-fid=fopen('real_finite_solutions','r');
-num=fscanf(fid,'%e',1);
-x=[];
-for i=1:num
-    xtmp=[];
-    for j=1:NN
-        xtmp(j)=fscanf(fid,'%e',1);
-        tmp=fscanf(fid,'%e',1);
-    end
-    xtmp=xtmp';
-    isinx=0;
-    for j=1:size(x,2)
-        if norm(x(:,j)-xtmp)<1e-10
-            isinx=1;
-            break
-        end
-    end
-    if ~isinx
-        x=[x xtmp];
-    end
-end
-fclose(fid);
+% unix('./bertini1 input')
+% 
+% fid=fopen('real_finite_solutions','r');
+% num=fscanf(fid,'%e',1);
+% x=[];
+% for i=1:num
+%     xtmp=[];
+%     for j=1:NN
+%         xtmp(j)=fscanf(fid,'%e',1);
+%         tmp=fscanf(fid,'%e',1);
+%     end
+%     xtmp=xtmp';
+%     isinx=0;
+%     for j=1:size(x,2)
+%         if norm(x(:,j)-xtmp)<1e-10
+%             isinx=1;
+%             break
+%         end
+%     end
+%     if ~isinx
+%         x=[x xtmp];
+%     end
+% end
+% fclose(fid);
