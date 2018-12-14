@@ -98,3 +98,9 @@ error_ug = getL2errorEdge(node,elem,ux,uy,x(size(node,1)+size(edge,1)+1:end-size
 % if size(e_ug,2)>1
 % order = log(e_u0(1:end-1)./e_u0(2:end)) /log(2)
 % end
+
+% x = recoverX(x,noden,elemn,edgen,bdDofn,u,ux,uy);
+% error_u0 = getL2error(noden,elemn,u,x(1:size(noden,1)+size(edgen,1)))
+% error_ug = getL2errorEdge(noden,elemn,ux,uy,x(size(noden,1)+size(edgen,1)+1:end-size(elemn,1 )))
+
+
