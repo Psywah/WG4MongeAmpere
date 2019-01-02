@@ -15,14 +15,14 @@ clear
 % uy = @(coord) 2*coord(:,2);
 
 % u = 1/2*x^2+x y^2/4 
- f = @(coord) .5*ones(size(coord(:,1)));
+f = @(coord) .5*ones(size(coord(:,1)));
 u = @(coord) coord(:,1).^2/2 +coord(:,1) + coord(:,2).^2/4;
 ux = @(coord) coord(:,1)+ones(size(coord(:,1)));
 uy = @(coord) coord(:,2)/2;
 
 
-% 
-% % u = x^4+y^4
+
+% u = x^4+y^4
 % f = @(coord) 144*coord(:,1).^2.*coord(:,2).^2;
 % u = @(coord) coord(:,1).^4 +coord(:,2).^4 ;
 % ux = @(coord) 4*coord(:,1).^3;
@@ -62,8 +62,8 @@ uy = @(coord) coord(:,2)/2;
  NdofU0 = size(noden,1)+size(edgen,1) - numel(bdDofn)
  %tmp = load(['sol_', int2str(2*2^Nbisect), '_ele_h1.mat']);
  %tmp = load(['./data/ele', int2str(2*2^Nbisect), '_DBC.mat']);
- tmp = load(['./data/ele', int2str(2*2^Nbisect), '_quadratic.mat']);
- %tmp = load(['./data/ele', int2str(2*2^Nbisect), '_quartic.mat']);
+ %tmp = load(['./data/ele', int2str(2*2^Nbisect), '_quadratic.mat']);
+ tmp = load(['./data/ele', int2str(2*2^Nbisect), '_quartic.mat']);
  %tmp = load(['./data/ele', int2str(2*2^Nbisect), '_square.mat']);
  NinitSol= size(tmp.x,2)
  for i = 1:NinitSol
@@ -95,9 +95,13 @@ options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
 allx=[];
 tol = 1e-6;
 for i = 1:NinitSol
+%    [x, F,EXITFLAG,OUTPUT,JACOB] = fsolve(fun,x0(:,i),options);
+%    cond(JACOB)
     [x, F] = fsolve(fun,x0(:,i),options);
-    fprintf('solution %d, resid %e\n',i,norm(F));
-    if norm(F)<tol
+    ini_error = norm(fun(x0(:,i)));
+    normF = norm(F);
+    fprintf('solution %d, resid %e, init resid%e\n',i,normF,ini_error);
+    if normF<tol || normF/ini_error< tol
         allx=[allx,x];
     end
 end
@@ -105,8 +109,8 @@ end
 x = delRept(allx, tol);
 size(x)
 %save(['./data/ele', int2str(4*2^Nbisect), '_DBC.mat'],'allx','x');
-save(['./data/ele', int2str(4*2^Nbisect), '_quadratic.mat'],'allx','x');
-%save(['./data/ele', int2str(4*2^Nbisect), '_quartic.mat'],'allx','x');
+%save(['./data/ele', int2str(4*2^Nbisect), '_quadratic.mat'],'allx','x');
+save(['./data/ele', int2str(4*2^Nbisect), '_quartic.mat'],'allx','x');
 %save(['./data/ele', int2str(4*2^Nbisect), '_square.mat'],'allx','x');
  
 
