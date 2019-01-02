@@ -22,11 +22,12 @@ clear
 
 
 
-% u = x^4+y^4
-% f = @(coord) 144*coord(:,1).^2.*coord(:,2).^2;
-% u = @(coord) coord(:,1).^4 +coord(:,2).^4 ;
-% ux = @(coord) 4*coord(:,1).^3;
-% uy = @(coord) 4*coord(:,2).^3;
+% u = x^4+y^4 + px^2y^2
+p=10;
+f = @(coord) (144-12*p^2)*coord(:,1).^2.*coord(:,2).^2 + 24*p*(coord(:,2).^4+coord(:,1).^4);
+u = @(coord) coord(:,1).^4 +coord(:,2).^4 + p*coord(:,1).^2.*coord(:,2).^2 ;
+ux = @(coord) 4*coord(:,1).^3 + 2*p*coord(:,1).*coord(:,2).^2;
+uy = @(coord) 4*coord(:,2).^3+ 2*p*coord(:,2).*coord(:,1).^2;
 % % 
 % maping square to square
 q = @(x) (-x.^2/(8*pi) + 1/(256*pi^3) +1/(32*pi)).*cos(8*pi*x) + x.*sin(8*pi*x)/(32*pi^2);
