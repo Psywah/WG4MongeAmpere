@@ -88,7 +88,7 @@ uy = @(coord) 4*coord(:,2).^3+ 2*p*coord(:,2).*coord(:,1).^2;
  %norm(fun1(tmp.x(:,1)));
 %  
 options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
-     'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
+     'Display','iter','MaxIter',300,'MaxFunEvals',3000000);
 %options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
 %    'Display','final-detailed','MaxIter',300,'MaxFunEvals',3000000);
 %options = optimoptions('fsolve','Algorithm','trust-region-reflective',...
@@ -99,9 +99,10 @@ options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
 allx=[];
 tol = 1e-6;
 for i = 1:NinitSol
-    [x, F,EXITFLAG,OUTPUT,JACOB] = fsolve(fun,x0(:,i),options);
+%     [x, F,EXITFLAG,OUTPUT,JACOB] = fsolve(fun,x0(:,i),options);
 %    cond(JACOB)
 %    [x, F, EXITFLAG] = fsolve(fun,x0(:,i),options);
+    x=newton_bertini(elemn, noden,h,f,u,ux,uy,x0);F= fun(x);
     ini_error = norm(fun(x0(:,i)));
     normF = norm(F);
     fprintf('solution %d, resid %e, init resid%e\n',i,normF,ini_error);
