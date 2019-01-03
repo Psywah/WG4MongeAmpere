@@ -1,7 +1,7 @@
 
 clear
 %% define mesh size
- h=1; Nbisect = 5;
+ h=1; Nbisect = 1;
  h = h/2^(Nbisect/2);
 %  f = @(coord) 4*ones(size(coord(:,1)));
 % ug = @(coord) 4*zeros(size(coord(:,1)));
@@ -23,7 +23,7 @@ clear
 
 
 % u = x^4+y^4 + px^2y^2
-p=10;
+p=1;
 f = @(coord) (144-12*p^2)*coord(:,1).^2.*coord(:,2).^2 + 24*p*(coord(:,2).^4+coord(:,1).^4);
 u = @(coord) coord(:,1).^4 +coord(:,2).^4 + p*coord(:,1).^2.*coord(:,2).^2 ;
 ux = @(coord) 4*coord(:,1).^3 + 2*p*coord(:,1).*coord(:,2).^2;
@@ -84,11 +84,13 @@ uy = @(coord) 4*coord(:,2).^3+ 2*p*coord(:,2).*coord(:,1).^2;
 
        
  fun = @(x) WG4MongeAmpere(x, elemn, noden,h,f,u,ux,uy) ;
+ fun1 = @(x) WG4MongeAmpere(x, elem, node,h*sqrt(2),f,u,ux,uy) ;
+ %norm(fun1(tmp.x(:,1)));
 %  
-% options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
-%     'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
 options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
-    'Display','final-detailed','MaxIter',300,'MaxFunEvals',3000000);
+     'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
+%options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
+%    'Display','final-detailed','MaxIter',300,'MaxFunEvals',3000000);
 %options = optimoptions('fsolve','Algorithm','trust-region-reflective',...
 %    'Display','iter','MaxIter',100,'MaxFunEvals',1000000);
 %options = optimoptions('fsolve','Algorithm','trust-region-dogleg',...
@@ -97,9 +99,9 @@ options = optimoptions('fsolve','Algorithm','levenberg-marquardt',...
 allx=[];
 tol = 1e-6;
 for i = 1:NinitSol
-%    [x, F,EXITFLAG,OUTPUT,JACOB] = fsolve(fun,x0(:,i),options);
+    [x, F,EXITFLAG,OUTPUT,JACOB] = fsolve(fun,x0(:,i),options);
 %    cond(JACOB)
-    [x, F, EXITFLAG] = fsolve(fun,x0(:,i),options);
+%    [x, F, EXITFLAG] = fsolve(fun,x0(:,i),options);
     ini_error = norm(fun(x0(:,i)));
     normF = norm(F);
     fprintf('solution %d, resid %e, init resid%e\n',i,normF,ini_error);

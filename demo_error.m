@@ -29,7 +29,7 @@ h=1/N;
 
 % 
 % u = x^4+y^4 + px^2y^2
-p=10;
+p=1;
 f = @(coord) (144-12*p^2)*coord(:,1).^2.*coord(:,2).^2 + 24*p*(coord(:,2).^4+coord(:,1).^4);
 u = @(coord) coord(:,1).^4 +coord(:,2).^4 + p*coord(:,1).^2.*coord(:,2).^2 ;
 ux = @(coord) 4*coord(:,1).^3 + 2*p*coord(:,1).*coord(:,2).^2;

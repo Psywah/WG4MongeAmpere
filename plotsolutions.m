@@ -2,30 +2,39 @@
 clear;
 disp('plot solutions');
 %% define mesh size
- h=1; Nbisect = 5;
+ h=1; Nbisect = 1;
   h = h/2^(Nbisect/2);
 %   f = @(coord) 4*ones(size(coord(:,1)));
 % u = @(coord) 4*zeros(size(coord(:,1)));
 % ux = @(coord) 4*zeros(size(coord(:,1)));
 % uy = @(coord) 4*zeros(size(coord(:,1)));
- f = @(coord) 4*ones(size(coord(:,1)));
-u = @(coord) coord(:,1).^2 +coord(:,2).^2  -1;
-ux = @(coord) 2*coord(:,1);
-uy = @(coord) 2*coord(:,2);
+%  f = @(coord) 4*ones(size(coord(:,1)));
+% u = @(coord) coord(:,1).^2 +coord(:,2).^2  -1;
+% ux = @(coord) 2*coord(:,1);
+% uy = @(coord) 2*coord(:,2);
+% 
+% % maping square to square
+% q = @(x) (-x.^2/(8*pi) + 1/(256*pi^3) +1/(32*pi)).*cos(8*pi*x) + x.*sin(8*pi*x)/(32*pi^2);
+% dq = @(x) (x.^2-.25).*sin(8*pi*x);
+% ddq = @(x) 2*x.*sin(8*pi*x) + 8*pi*(x.^2-.25).*cos(8*pi*x);
+% f = @(coord) ones(size(coord(:,1))) +4*(ddq(coord(:,1)).*q(coord(:,2)) +ddq(coord(:,2)).*q(coord(:,1)) )...
+%                     +16*(ddq(coord(:,1)).*q(coord(:,2)).*ddq(coord(:,2)).*q(coord(:,1)) -...
+%                           dq(coord(:,1)).^2.*dq(coord(:,2)).^2 );
+% u = @(coord) sum(coord.^2,2)/2 + 4*q(coord(:,1)).*q(coord(:,2));
+% ux = @(coord) coord(:,1) + 4*dq(coord(:,1)).*q(coord(:,2));
+% uy = @(coord) coord(:,2) + 4*dq(coord(:,2)).*q(coord(:,1));
 
-% maping square to square
-q = @(x) (-x.^2/(8*pi) + 1/(256*pi^3) +1/(32*pi)).*cos(8*pi*x) + x.*sin(8*pi*x)/(32*pi^2);
-dq = @(x) (x.^2-.25).*sin(8*pi*x);
-ddq = @(x) 2*x.*sin(8*pi*x) + 8*pi*(x.^2-.25).*cos(8*pi*x);
-f = @(coord) ones(size(coord(:,1))) +4*(ddq(coord(:,1)).*q(coord(:,2)) +ddq(coord(:,2)).*q(coord(:,1)) )...
-                    +16*(ddq(coord(:,1)).*q(coord(:,2)).*ddq(coord(:,2)).*q(coord(:,1)) -...
-                          dq(coord(:,1)).^2.*dq(coord(:,2)).^2 );
-u = @(coord) sum(coord.^2,2)/2 + 4*q(coord(:,1)).*q(coord(:,2));
-ux = @(coord) coord(:,1) + 4*dq(coord(:,1)).*q(coord(:,2));
-uy = @(coord) coord(:,2) + 4*dq(coord(:,2)).*q(coord(:,1));
+
+% u = x^4+y^4 + px^2y^2
+p=1;
+f = @(coord) (144-12*p^2)*coord(:,1).^2.*coord(:,2).^2 + 24*p*(coord(:,2).^4+coord(:,1).^4);
+u = @(coord) coord(:,1).^4 +coord(:,2).^4 + p*coord(:,1).^2.*coord(:,2).^2 ;
+ux = @(coord) 4*coord(:,1).^3 + 2*p*coord(:,1).*coord(:,2).^2;
+uy = @(coord) 4*coord(:,2).^3+ 2*p*coord(:,2).*coord(:,1).^2;
+
 
 % [node,elem] = squaremesh([0,1,0,1],1/100); % 2 elems
-% node = node - 0.5;
+% %node = node - 0.5;
 % showsolution(node,elem,u(node));
 
 
@@ -33,7 +42,7 @@ uy = @(coord) coord(:,2) + 4*dq(coord(:,2)).*q(coord(:,1));
 %% generate mesh
 % 4 elems
  noden = [0,0;1,0;1,1;0,1;0.5,0.5];
-  noden = noden - 0.5;
+%  noden = noden - 0.5;
  elemn = [1,2,5;2,3,5;3,4,5;4,1,5];
  [elemn,~,~] = fixorder(noden,elemn);
  elemn = label(noden,elemn);
@@ -48,7 +57,7 @@ uy = @(coord) coord(:,2) + 4*dq(coord(:,2)).*q(coord(:,1));
 
  %% number of unknows
  [~,edgen,bdDofn] = dofP2(elemn);
- tmp = load(['./data/ele', int2str(4*2^Nbisect), '_square.mat']);
+ tmp = load(['./data/ele', int2str(4*2^Nbisect), '_square10.mat']);
 
 %  
 %  for i = 1:size(tmp.allx,2)
@@ -72,7 +81,6 @@ uy = @(coord) coord(:,2) + 4*dq(coord(:,2)).*q(coord(:,1));
 for i =1:size(tmp.x,2)
     tx(:,i)=recoverX(tmp.x(:,i),noden,elemn,edgen,bdDofn,u,ux,uy);
 end
-tx=tx(:,2:end);
   NSol= size(tx,2);
  Nplot = ceil(sqrt(NSol));
  for i = 1 :NSol
