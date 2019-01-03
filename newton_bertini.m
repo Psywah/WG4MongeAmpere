@@ -50,7 +50,10 @@ fprintf(fid,'%1.16f  %1.16f\n',[x0 zeros(size(x0))]');
 fclose(fid);
 
 unix('./bertini1 input')
-
+if isempty(ls('real_solutions'))
+    x=[];
+    return
+end
 fid=fopen('real_solutions','r');
 num=fscanf(fid,'%e',1);
 x=[];
