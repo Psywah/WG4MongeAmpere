@@ -102,12 +102,15 @@ for i = 1:NinitSol
 %     [x, F,EXITFLAG,OUTPUT,JACOB] = fsolve(fun,x0(:,i),options);
 %    cond(JACOB)
 %    [x, F, EXITFLAG] = fsolve(fun,x0(:,i),options);
-    x=newton_bertini(elemn, noden,h,f,u,ux,uy,x0);F= fun(x);
-    ini_error = norm(fun(x0(:,i)));
-    normF = norm(F);
-    fprintf('solution %d, resid %e, init resid%e\n',i,normF,ini_error);
-    if normF<tol || normF/ini_error< tol %|| EXITFLAG >0
-        allx=[allx,x];
+    x=newton_bertini(elemn, noden,h,f,u,ux,uy,x0);
+    if size(x,1) > 1
+        F= fun(x);
+        ini_error = norm(fun(x0(:,i)));
+        normF = norm(F);
+        fprintf('solution %d, resid %e, init resid%e\n',i,normF,ini_error);
+        if normF<tol || normF/ini_error< tol %|| EXITFLAG >0
+         allx=[allx,x];
+        end
     end
 end
 
