@@ -66,7 +66,7 @@ uy = @(coord) 4*coord(:,2).^3+ 2*p*coord(:,2).*coord(:,1).^2;
  %tmp = load(['./data/ele', int2str(2*2^Nbisect), '_quadratic.mat']);
  %tmp = load(['./data/ele', int2str(2*2^Nbisect), '_quartic.mat']);
  %tmp = load(['./data/ele', int2str(2*2^Nbisect), '_square.mat']);
-  tmp = load(['./data/ele', int2str(2*2^Nbisect), '_square10.mat']);
+  tmp = load(['./data/ele', int2str(2*2^Nbisect), '_square1.mat']);
  NinitSol= size(tmp.x,2)
  for i = 1:NinitSol
     xc(:,i)= recoverX(tmp.x(:,i),node,elem,edge,bdDof,u,ux,uy);
@@ -120,7 +120,7 @@ size(x)
 %save(['./data/ele', int2str(4*2^Nbisect), '_quadratic.mat'],'allx','x');
 %save(['./data/ele', int2str(4*2^Nbisect), '_quartic.mat'],'allx','x');
 %save(['./data/ele', int2str(4*2^Nbisect), '_square.mat'],'allx','x');
-save(['./data/ele', int2str(4*2^Nbisect), '_square10.mat'],'allx','x');
+save(['./data/ele', int2str(4*2^Nbisect), '_square1.mat'],'allx','x');
  
 
 %%
